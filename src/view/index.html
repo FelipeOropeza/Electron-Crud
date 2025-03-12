@@ -8,23 +8,36 @@
       content="default-src 'self'; script-src 'self' 'unsafe-inline'"
     />
     <link rel="stylesheet" href="../public/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../public/css/style.css">
     <title>Home</title>
   </head>
-  <body>
-    <div class="container">
-      <h1>Electron tutorial</h1>
-      <h2>Janela modal</h2>
-      <button onclick="openChild()" id="btnModal"></button>
-      <h2 class="mt-3">Dialog</h2>
-      <button class="btn btn-info" onclick="info()">Informações</button>
-      <button class="btn btn-warning" onclick="warning()">Aviso</button>
-      <button class="btn btn-secondary" onclick="select()">Selecionar</button>
+  <body class="d-flex flex-column min-vh-100">
+    <div class="container flex-grow-1">
+      <h1 class="mt-5">Gerenciamento de Usuários</h1>
+      <div class="mb-3">
+        <button class="btn btn-success" onclick="showInsertUser()">
+          Inserir Usuário
+        </button>
+      </div>
+
+      <h2 class="mt-4">Lista de Usuários</h2>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">E-mail</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
     </div>
 
-    <footer>
-      <p id="dataAtual"></p>
+    <footer class="mt-5 py-3 bg-dark text-white text-center mt-auto">
+      <p id="dataAtual" class="mb-0"></p>
+      <small>&copy; 2025 - Todos os direitos reservados</small>
     </footer>
+
     <script src="renderer.js"></script>
     <script src="../public/js/bootstrap.min.js"></script>
   </body>

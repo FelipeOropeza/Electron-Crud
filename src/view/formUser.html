@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'"
+    />
+    <link rel="stylesheet" href="../public/css/bootstrap.min.css" />
+    <title>Formulário de Cadastro</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Formulário de Cadastro</h1>
+      <form>
+        <div class="mb-3">
+          <label for="name" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="name" placeholder="Digite seu nome">
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input type="email" class="form-control" id="email" placeholder="Digite seu e-mail">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha</label>
+          <input type="password" class="form-control" id="password" placeholder="Digite sua senha">
+        </div>
+        <button onclick="insertUser()" type="button" class="btn btn-primary">Cadastrar</button>
+      </form>
+    </div>
+
+    <script src="renderer.js"></script>
+    <script src="../public/js/bootstrap.min.js"></script>
+  </body>
+</html>

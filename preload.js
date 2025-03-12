@@ -2,12 +2,15 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("api", {
   verElectron: () => process.versions.electron,
-  open: () => ipcRenderer.send("open-child"),
-  send: (message) => ipcRenderer.send("renderer-message", message),
-  on: (message) => ipcRenderer.on("main-message", message),
-  info: () => ipcRenderer.send("dialog-info"),
-  warning: () => ipcRenderer.send("dialog-warning"),
-  select: () => ipcRenderer.send("dialog-select"),
+  showInsertUser: () => ipcRenderer.send("open-showInsertUser"),
+  insertUser: (name, email, password) =>
+    ipcRenderer.send("insert-user", { name, email, password }),
+  onUserInserted: (callback) =>
+    ipcRenderer.on("insert-user-response", callback),
+  selectUsers: () => ipcRenderer.send("select-users"),
+  onUsersSelected: (callback) =>
+    ipcRenderer.on("select-users-response", callback),
+  closeForm: () => ipcRenderer.send("close-form"),
 });
 
 window.addEventListener("DOMContentLoaded", () => {

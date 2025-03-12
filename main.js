@@ -1,5 +1,16 @@
-const { app, BrowserWindow, Menu, shell, ipcMain, dialog } = require("electron/main");
+const {
+  app,
+  BrowserWindow,
+  Menu,
+  shell,
+  ipcMain,
+  dialog,
+} = require("electron/main");
+const { createUser, getUsers } = require("./src/prisma/UserService.js");
 const path = require("node:path");
+require("electron-reload")(path.join(__dirname, "."), {
+  electron: path.join(__dirname, "node_modules", ".bin", "electron.cmd"),
+});
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -7,7 +18,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-    }
+    },
     // autoHideMenuBar: true,
   });
 
@@ -16,80 +27,58 @@ const createWindow = () => {
   win.loadFile("./src/view/index.html");
 };
 
-const aboutWindow = () => {
-  const about = new BrowserWindow({
-    width: 360,
-    height: 220,
-    autoHideMenuBar: true,
-    resizable: false,
-  });
-
-  about.loadFile("./src/view/about.html");
-}
-
-const childWindow = () => {
+const InsertWindow = () => {
   const father = BrowserWindow.getFocusedWindow();
-  if(father) {
+  if (father) {
     const child = new BrowserWindow({
       parent: father,
-      width: 640,
-      height: 480,
+      width: 600,
+      height: 500,
       autoHideMenuBar: true,
       resizable: false,
-      parent: father,
+      center: true,
       modal: true,
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+      },
     });
 
-    child.loadFile("./src/view/child.html");
+    child.loadFile("./src/view/formUser.html");
   }
-}
+};
 
 app.whenReady().then(() => {
   createWindow();
-  // aboutWindow();
 
-  ipcMain.on("open-child", () => {
-    childWindow();
+  ipcMain.on("open-showInsertUser", () => {
+    InsertWindow();
   });
 
-  ipcMain.on("renderer-message", (event, message) => {
-    console.log(message);
-    event.reply("main-message", "Oi, sou o main.js!");
+  ipcMain.on("insert-user", async (event, user) => {
+    try {
+      const { name, email, password } = user;
+      await createUser(name, email, password);
+      await dialog.showMessageBox({
+        type: "info",
+        title: "Sucesso",
+        message: "Usuário inserido com sucesso!",
+        buttons: ["OK"],
+      });
+
+      event.sender.send("insert-user-response", { success: true });
+    } catch (error) {
+      dialog.showErrorBox("Erro", error.message);
+    }
   });
 
-  ipcMain.on('dialog-info', () => {
-    dialog.showMessageBox({
-      type: 'info',
-      title: 'Informação',
-      message: 'Mensagem',
-      buttons: ['OK']
-    })
-  })
+  ipcMain.on("select-users", async (event) => {
+    const users = await getUsers();
+    event.sender.send("select-users-response", { users: users});
+  });
 
-  ipcMain.on('dialog-warning', () => {
-    dialog.showMessageBox({
-      type: 'warning',
-      title: 'Aviso!',
-      message: 'Confirma esta ação?',
-      buttons: ['Sim', 'Não'],
-      defaultId: 0
-    }).then((result) => {
-      console.log(result)
-      if (result.response === 0) {
-        console.log("Confirmado!")
-      }
-    })
-  })
-
-  ipcMain.on('dialog-select', () => {
-    dialog.showOpenDialog({
-      properties: ['openDirectory']
-    }).then((result) => {
-      console.log(result)
-    }).catch((error) => {
-      console.log(error)
-    })
-  })
+  ipcMain.on("close-form", () => {
+    BrowserWindow.getFocusedWindow().close();
+  });
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -102,61 +91,51 @@ app.on("window-all-closed", () => {
 
 const template = [
   {
-    label: 'Arquivo',
+    label: "Arquivo",
     submenu: [
       {
-        label: 'Janela Secundária',
-        click: () => childWindow()
-      },
-      {
-        label: 'Sair',
+        label: "Sair",
         click: () => app.quit(),
-        accelerator: 'Alt+F4'
-      }
-    ]
+        accelerator: "Alt+F4",
+      },
+    ],
   },
   {
-    label: 'Exibir',
+    label: "Exibir",
     submenu: [
       {
-        label: 'Recarregar',
-        role: 'reload'
+        label: "Recarregar",
+        role: "reload",
       },
       {
-        label: 'Ferramentas do desenvolvedor',
-        role: 'toggleDevTools'
+        label: "Ferramentas do desenvolvedor",
+        role: "toggleDevTools",
       },
       {
-        type: 'separator'
+        type: "separator",
       },
       {
-        label: 'Aplicar zoom',
-        role: 'zoomIn'
+        label: "Aplicar zoom",
+        role: "zoomIn",
       },
       {
-        label: 'Reduzir',
-        role: 'zoomOut'
+        label: "Reduzir",
+        role: "zoomOut",
       },
       {
-        label: 'Restaurar o zoom padrão',
-        role: 'resetZoom'
-      }
-    ]
+        label: "Restaurar o zoom padrão",
+        role: "resetZoom",
+      },
+    ],
   },
   {
-    label: 'Ajuda',
+    label: "Ajuda",
     submenu: [
       {
-        label: 'docs',
-        click: () => shell.openExternal('https://www.electronjs.org/docs/latest/')
+        label: "docs",
+        click: () =>
+          shell.openExternal("https://www.electronjs.org/docs/latest/"),
       },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Sobre',
-        click: () => aboutWindow()
-      }
-    ]
-  }
-]
+    ],
+  },
+];
