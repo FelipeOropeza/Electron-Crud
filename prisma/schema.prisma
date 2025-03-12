@@ -1,0 +1,16 @@
+datasource db {
+  provider = "mongodb" // Indica que o banco é MongoDB
+  url      = env("DATABASE_URL") // Conexão com MongoDB via variável de ambiente
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model User {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String 
+  email   String @unique
+  password String
+}
