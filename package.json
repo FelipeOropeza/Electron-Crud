@@ -1,5 +1,6 @@
 {
   "name": "electron-crud",
+  "productName": "Electron CRUD",
   "version": "1.0.0",
   "description": "Teste de CRUD com Electron",
   "license": "ISC",
@@ -21,9 +22,12 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.7.0",
     "@electron-forge/plugin-fuses": "^7.7.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "^35.0.1"
+    "electron": "^35.0.1",
+    "electron-reload": "^2.0.0-alpha.1",
+    "prisma": "^6.5.0"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "electron-crud": "file:",
     "electron-squirrel-startup": "^1.0.1"
   }
