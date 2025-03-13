@@ -8,9 +8,6 @@ const {
 } = require("electron/main");
 const { createUser, getUsers, deleteUser } = require("./src/prisma/UserService.js");
 const path = require("node:path");
-require("electron-reload")(path.join(__dirname, "."), {
-  electron: path.join(__dirname, "node_modules", ".bin", "electron.cmd"),
-});
 
 let win;
 
