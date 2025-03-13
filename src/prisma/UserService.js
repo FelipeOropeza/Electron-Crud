@@ -4,16 +4,15 @@ const prisma = new PrismaClient();
 
 async function createUser(name, email, password) {
   try {
-    const user = await prisma.user.create({
+    await prisma.user.create({
       data: {
-        name: name,      
-        email: email,    
+        name: name,
+        email: email,
         password: password,
       },
     });
-    console.log('Usuário criado:', user);
   } catch (error) {
-    console.error('Erro ao criar o usuário:', error);
+    console.error("Erro ao criar o usuário:", error);
   }
 }
 
@@ -22,8 +21,20 @@ async function getUsers() {
     const users = await prisma.user.findMany();
     return users;
   } catch (error) {
-    console.error('Erro ao listar usuários:', error);
+    console.error("Erro ao listar usuários:", error);
   }
 }
 
-module.exports = { createUser, getUsers };
+async function deleteUser(id) {
+  try {
+    await prisma.user.delete({
+      where: {
+        id: id,
+      },
+    });
+  } catch (error) {
+    console.error("Erro ao deleta o usuário:", error);
+  }
+}
+
+module.exports = { createUser, getUsers, deleteUser };

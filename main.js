@@ -6,14 +6,16 @@ const {
   ipcMain,
   dialog,
 } = require("electron/main");
-const { createUser, getUsers } = require("./src/prisma/UserService.js");
+const { createUser, getUsers, deleteUser } = require("./src/prisma/UserService.js");
 const path = require("node:path");
 require("electron-reload")(path.join(__dirname, "."), {
   electron: path.join(__dirname, "node_modules", ".bin", "electron.cmd"),
 });
 
+let win;
+
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -66,6 +68,23 @@ app.whenReady().then(() => {
       });
 
       event.sender.send("insert-user-response", { success: true });
+      win.webContents.send("response", { success: true });
+    } catch (error) {
+      dialog.showErrorBox("Erro", error.message);
+    }
+  });
+
+  ipcMain.on("delete-user", async (event, id) => {
+    try {
+      await deleteUser(id);
+      await dialog.showMessageBox({
+        type: "info",
+        title: "Sucesso",
+        message: "Usuário foi deletado com sucesso!",
+        buttons: ["OK"],
+      });
+
+      win.webContents.send("response", { success: true });
     } catch (error) {
       dialog.showErrorBox("Erro", error.message);
     }
@@ -73,7 +92,7 @@ app.whenReady().then(() => {
 
   ipcMain.on("select-users", async (event) => {
     const users = await getUsers();
-    event.sender.send("select-users-response", { users: users});
+    event.sender.send("select-users-response", { users: users });
   });
 
   ipcMain.on("close-form", () => {

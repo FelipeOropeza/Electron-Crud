@@ -4,6 +4,12 @@ function showInsertUser() {
   api.showInsertUser();
 }
 
+api.selectUsers();
+
+function deleteUser(id) {
+  api.deleteUser(id);
+}
+
 function showUsers() {
   api.onUsersSelected((event, response) => {
     const users = response.users;
@@ -19,14 +25,22 @@ function showUsers() {
           <td>${user.name}</td>
           <td>${user.email}</td>
           <td>${user.password}</td>
+          <td><button type="button" onclick="deleteUser('${user.id}')" class="btn btn-danger">Deletar</button></td>
         `;
       userTableBody.appendChild(row);
     });
   });
 }
 
-api.selectUsers();
 showUsers();
+
+api.response((event, response) => {
+  if (response.success) {
+    api.selectUsers();
+    showUsers();
+  }
+});
+
 
 // formUser.html (renderer.js)
 
@@ -41,6 +55,5 @@ function insertUser() {
 api.onUserInserted((event, response) => {
   if (response.success) {
     api.closeForm();
-    showUsers();
   }
 });
