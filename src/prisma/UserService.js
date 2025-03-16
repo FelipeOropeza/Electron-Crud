@@ -37,4 +37,13 @@ async function deleteUser(id) {
   }
 }
 
+async function getUserById(id) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: id } });
+    return user;
+  } catch (error) {
+    console.error("Erro ao buscar o usuário:", error);
+  }
+}
+
 module.exports = { createUser, getUsers, deleteUser };
