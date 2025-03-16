@@ -8,9 +8,44 @@
       content="default-src 'self'; script-src 'self' 'unsafe-inline'"
     />
     <link rel="stylesheet" href="../public/css/bootstrap.min.css" />
-    <title>Formulário</title>
+    <title>Atualizar Usuário</title>
   </head>
   <body>
+    <div class="container mt-5">
+      <h1 class="mb-4">Atualizar Usuário</h1>
+      <form>
+        <div class="mb-3">
+          <label for="name" class="form-label">Nome</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            placeholder="Digite seu nome"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">E-mail</label>
+          <input
+            type="email"
+            class="form-control"
+            id="email"
+            placeholder="Digite seu e-mail"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Senha</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="Digite sua senha"
+          />
+        </div>
+        <button type="button" class="btn btn-primary">
+          Atualizar
+        </button>
+      </form>
+    </div>
 
     <script src="renderer.js"></script>
     <script src="../public/js/bootstrap.min.js"></script>

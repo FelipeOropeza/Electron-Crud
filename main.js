@@ -9,6 +9,7 @@ const {
 const {
   createUser,
   getUsers,
+  getUserById,
   deleteUser,
 } = require("./src/prisma/UserService.js");
 const path = require("node:path");
@@ -72,8 +73,9 @@ const UpdateWindow = (id) => {
 
     Updatechild.loadFile("./src/view/formUpdate.html");
 
-    Updatechild.webContents.on('did-finish-load', () => {
-      Updatechild.webContents.send('set-id', { id: id });
+    Updatechild.webContents.on('did-finish-load', async () => {
+      const user = await getUserById(id);
+      Updatechild.webContents.send('set-user', { user: user });
     });
   }
 };

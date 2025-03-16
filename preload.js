@@ -18,7 +18,7 @@ contextBridge.exposeInMainWorld("api", {
   closeForm: () => ipcRenderer.send("close-form"),
 
   // formUpdate.html
-  onSetId: (callback) => ipcRenderer.on('set-id', callback),
+  onSetUser: (callback) => ipcRenderer.on('set-user', callback),
 });
 
 window.addEventListener("DOMContentLoaded", () => {

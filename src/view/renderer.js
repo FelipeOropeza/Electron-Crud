@@ -66,10 +66,8 @@ api.onUserInserted((event, response) => {
 
 // formUserUpdate.html (renderer.js)
 
-window.addEventListener('DOMContentLoaded', () => {
-  // Recebe o ID da janela de atualização
-  api.onSetId((event, { id }) => {
-    console.log("ID recebido na janela de atualização:", id);
-    // Agora você pode usar o ID para preencher o formulário ou fazer outras operações
-  });
+api.onSetUser((event, { user }) => {
+  document.getElementById("name").value = user.name;
+  document.getElementById("email").value = user.email;
+  document.getElementById("password").value = user.password;
 });

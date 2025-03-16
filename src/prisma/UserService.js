@@ -46,4 +46,4 @@ async function getUserById(id) {
   }
 }
 
-module.exports = { createUser, getUsers, deleteUser };
+module.exports = { createUser, getUsers, getUserById, deleteUser };
