@@ -6,15 +6,21 @@ const {
   ipcMain,
   dialog,
 } = require("electron/main");
-const { createUser, getUsers, deleteUser } = require("./src/prisma/UserService.js");
+const {
+  createUser,
+  getUsers,
+  deleteUser,
+} = require("./src/prisma/UserService.js");
 const path = require("node:path");
 
 let win;
+let Updatechild;
 
 const createWindow = () => {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    title: "Home",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
@@ -29,11 +35,12 @@ const createWindow = () => {
 const InsertWindow = () => {
   const father = BrowserWindow.getFocusedWindow();
   if (father) {
-    const child = new BrowserWindow({
+    const Insertchild = new BrowserWindow({
       parent: father,
       width: 600,
       height: 500,
       autoHideMenuBar: true,
+      title: "Formulario de Cadastro",
       resizable: false,
       center: true,
       modal: true,
@@ -42,7 +49,32 @@ const InsertWindow = () => {
       },
     });
 
-    child.loadFile("./src/view/formUser.html");
+    Insertchild.loadFile("./src/view/formUser.html");
+  }
+};
+
+const UpdateWindow = (id) => {
+  const father = BrowserWindow.getFocusedWindow();
+  if (father) {
+    Updatechild = new BrowserWindow({
+      parent: father,
+      width: 600,
+      height: 500,
+      autoHideMenuBar: true,
+      title: "Formulario de Atualização",
+      resizable: false,
+      center: true,
+      modal: true,
+      webPreferences: {
+        preload: path.join(__dirname, "preload.js"),
+      },
+    });
+
+    Updatechild.loadFile("./src/view/formUpdate.html");
+
+    Updatechild.webContents.on('did-finish-load', () => {
+      Updatechild.webContents.send('set-id', { id: id });
+    });
   }
 };
 
@@ -52,6 +84,11 @@ app.whenReady().then(() => {
   ipcMain.on("open-showInsertUser", () => {
     InsertWindow();
   });
+
+  ipcMain.on("open-showUpdateUser", (event, id) => {
+    UpdateWindow(id);
+  });
+  
 
   ipcMain.on("insert-user", async (event, user) => {
     try {

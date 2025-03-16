@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 contextBridge.exposeInMainWorld("api", {
   // index.html
   showInsertUser: () => ipcRenderer.send("open-showInsertUser"),
+  showUpdateUser: (id) => ipcRenderer.send("open-showUpdateUser", id),
   response: (callback) => ipcRenderer.on("response", callback),
   selectUsers: () => ipcRenderer.send("select-users"),
   onUsersSelected: (callback) =>
@@ -15,10 +16,14 @@ contextBridge.exposeInMainWorld("api", {
   onUserInserted: (callback) =>
     ipcRenderer.on("insert-user-response", callback),
   closeForm: () => ipcRenderer.send("close-form"),
+
+  // formUpdate.html
+  onSetId: (callback) => ipcRenderer.on('set-id', callback),
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  const dataAtual = (document.getElementById("dataAtual").innerHTML = obterData());
+  const dataAtual = (document.getElementById("dataAtual").innerHTML =
+    obterData());
 });
 
 function obterData() {
