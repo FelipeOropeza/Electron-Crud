@@ -25,6 +25,15 @@ async function getUsers() {
   }
 }
 
+async function getUserById(id) {
+  try {
+    const user = await prisma.user.findUnique({ where: { id: id } });
+    return user;
+  } catch (error) {
+    console.error("Erro ao buscar o usuário:", error);
+  }
+}
+
 async function deleteUser(id) {
   try {
     await prisma.user.delete({
@@ -37,13 +46,15 @@ async function deleteUser(id) {
   }
 }
 
-async function getUserById(id) {
+async function updateUser(id, name, email, password) {
   try {
-    const user = await prisma.user.findUnique({ where: { id: id } });
-    return user;
+    await prisma.user.update({
+      where: { id: id },
+      data: { name, email, password },
+    });
   } catch (error) {
-    console.error("Erro ao buscar o usuário:", error);
+    console.error("Erro ao atualizar o usuário:", error);
   }
 }
 
-module.exports = { createUser, getUsers, getUserById, deleteUser };
+module.exports = { createUser, getUsers, getUserById, deleteUser, updateUser };

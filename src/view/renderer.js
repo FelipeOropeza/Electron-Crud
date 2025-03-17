@@ -67,7 +67,23 @@ api.onUserInserted((event, response) => {
 // formUserUpdate.html (renderer.js)
 
 api.onSetUser((event, { user }) => {
+  document.getElementById("id").value = user.id;
   document.getElementById("name").value = user.name;
   document.getElementById("email").value = user.email;
   document.getElementById("password").value = user.password;
+});
+
+function updateUser() {
+  const id = document.getElementById("id").value;
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  api.updateUser(id, name, email, password);
+}
+
+api.onUserUpdated((event, response) => {
+  if (response.success) {
+    api.closeForm();
+  }
 });

@@ -18,7 +18,10 @@ contextBridge.exposeInMainWorld("api", {
   closeForm: () => ipcRenderer.send("close-form"),
 
   // formUpdate.html
-  onSetUser: (callback) => ipcRenderer.on('set-user', callback),
+  onSetUser: (callback) => ipcRenderer.on("set-user", callback),
+  updateUser: (id, name, email, password) =>
+    ipcRenderer.send("update-user", { id, name, email, password }),
+  onUserUpdated: (callback) => ipcRenderer.on("update-user-response", callback),
 });
 
 window.addEventListener("DOMContentLoaded", () => {

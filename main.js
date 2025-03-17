@@ -11,6 +11,7 @@ const {
   getUsers,
   getUserById,
   deleteUser,
+  updateUser
 } = require("./src/prisma/UserService.js");
 const path = require("node:path");
 
@@ -73,9 +74,9 @@ const UpdateWindow = (id) => {
 
     Updatechild.loadFile("./src/view/formUpdate.html");
 
-    Updatechild.webContents.on('did-finish-load', async () => {
+    Updatechild.webContents.on("did-finish-load", async () => {
       const user = await getUserById(id);
-      Updatechild.webContents.send('set-user', { user: user });
+      Updatechild.webContents.send("set-user", { user: user });
     });
   }
 };
@@ -90,7 +91,25 @@ app.whenReady().then(() => {
   ipcMain.on("open-showUpdateUser", (event, id) => {
     UpdateWindow(id);
   });
-  
+
+  ipcMain.on("update-user", async (event, user) => {
+    try {
+      const { id, name, email, password } = user;
+      await updateUser(id, name, email, password);
+      await dialog.showMessageBox({
+        type: "info",
+        title: "Sucesso",
+        message: "Usuário atualizado com sucesso!",
+        buttons: ["OK"],
+      });
+
+      event.sender.send("update-user-response", { success: true });
+      win.webContents.send("response", { success: true });
+
+    } catch (error) {
+      dialog.showErrorBox("Erro", error.message);
+    }
+  });
 
   ipcMain.on("insert-user", async (event, user) => {
     try {
